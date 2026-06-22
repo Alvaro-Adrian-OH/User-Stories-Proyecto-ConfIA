@@ -1,0 +1,106 @@
+Feature: EP07–Plataforma: Notificaciones, Rendimiento y Seguridad
+  Como usuario de ConfIA
+  Quiero recibir notificaciones oportunas, experimentar una plataforma rápida y confiar en la seguridad de mis datos
+  Para tener una experiencia fluida, eficiente y protegida en todo momento
+
+  # User Story 22
+
+  @AT-22 @US-22 @notificaciones 
+  Scenario: Alerta in-app recibida al finalizar el análisis de un PDF en segundo plano
+    Given que el sistema finaliza el análisis en segundo plano de un PDF cargado por el usuario
+    When el proceso de análisis se completa
+    Then el usuario recibe una alerta in-app notificando que el análisis está listo para consultar
+
+  @AT-22 @US-22 @notificaciones 
+  Scenario: Notificación visible sin interrumpir el flujo de trabajo del usuario
+    Given que el usuario tiene la plataforma abierta en el navegador
+    When llega una notificación in-app
+    Then esta aparece de forma visible en la interfaz sin interrumpir el flujo de trabajo actual del usuario
+
+  @AT-22 @US-22 @notificaciones 
+  Scenario: Notificación encolada para mostrar al próximo acceso cuando el usuario está inactivo
+    Given que el usuario no está activo en la plataforma pero tiene una sesión vigente
+    When ocurre un evento relevante como el fin de un análisis
+    Then el sistema encola la notificación
+    And la muestra al usuario en su próximo acceso a la plataforma
+
+  @AT-22 @US-22 @notificaciones 
+  Scenario: Clic en notificación redirige a la sección pertinente
+    Given que el usuario hace clic en una notificación in-app
+    When interactúa con ella
+    Then el sistema redirige al usuario a la sección pertinente, como los resultados del análisis finalizado
+
+  @AT-22 @US-22 @notificaciones 
+  Scenario: Panel de notificaciones lista registros en orden cronológico con indicador de estado
+    Given que el usuario acumula múltiples notificaciones no leídas
+    When accede al panel de notificaciones
+    Then el sistema las lista en orden cronológico descendente
+    And cada notificación muestra un indicador de estado leído o no leído
+
+  # User Story 23
+
+  @AT-23 @US-23 @rendimiento 
+  Scenario: Consultas a URL previamente validada resueltas desde caché en menos de 500 ms
+    Given que un usuario realiza una consulta a una URL que ya fue validada previamente
+    When el sistema detecta el registro almacenado en caché
+    Then retorna el resultado almacenado en un tiempo inferior a 500 milisegundos
+
+  @AT-23 @US-23 @rendimiento 
+  Scenario: Carga inicial de la plataforma completada en menos de 2 segundos
+    Given que un usuario accede por primera vez a la plataforma ConfIA
+    When el navegador carga la página inicial
+    Then el tiempo de carga completo no supera los 2 segundos en condiciones normales de red
+
+  @AT-23 @US-23 @rendimiento 
+  Scenario: Tiempo de respuesta estable bajo carga concurrente de múltiples usuarios
+    Given que múltiples usuarios realizan validaciones de fuentes simultáneamente
+    When el servidor procesa las solicitudes concurrentes
+    Then el tiempo de respuesta se mantiene dentro de los umbrales aceptables definidos sin degradación perceptible
+
+  @AT-23 @US-23 @rendimiento 
+  Scenario: Fuente re-procesada y caché actualizado cuando el registro ha expirado
+    Given que el caché de una URL ha expirado o la fuente ha sido actualizada
+    When el usuario solicita la validación de esa URL
+    Then el sistema re-procesa la fuente desde el origen
+    And actualiza el resultado almacenado en caché con la nueva información
+
+  @AT-23 @US-23 @rendimiento
+  Scenario: Transiciones entre secciones de la plataforma dentro del tiempo de respuesta definido
+    Given que el usuario navega entre secciones de la plataforma ConfIA
+    When realiza transiciones de pantalla
+    Then la carga de cada sección no supera el tiempo de respuesta definido para mantener una experiencia fluida
+
+  # User Story 24
+
+  @AT-24 @US-24 @seguridad 
+  Scenario: Pipeline bloqueado cuando la cobertura de pruebas es inferior al 70%
+    Given que el pipeline automatizado de CI/CD ejecuta las pruebas unitarias del proyecto
+    When la cobertura de pruebas resulta inferior al 70%
+    Then el pipeline falla
+    And bloquea el despliegue a producción impidiendo el paso a ese entorno
+
+  @AT-24 @US-24 @seguridad 
+  Scenario: Pipeline permite el despliegue cuando la cobertura supera el umbral mínimo
+    Given que el pipeline ejecuta las pruebas unitarias y la cobertura es igual o superior al 70%
+    When todas las pruebas unitarias pasan exitosamente
+    Then el pipeline permite el avance al paso de despliegue a producción
+
+  @AT-24 @US-24 @seguridad
+  Scenario: Acceso a recursos de otro usuario bloqueado por el sistema
+    Given que un usuario autenticado intenta acceder a recursos protegidos pertenecientes a otro usuario
+    When el sistema valida los permisos de la solicitud
+    Then bloquea el acceso
+    And retorna un error de autorización al usuario solicitante
+
+  @AT-24 @US-24 @seguridad 
+  Scenario: Solicitud con JWT manipulado rechazada con error 401
+    Given que la plataforma recibe una solicitud que incluye un JWT manipulado o inválido
+    When el servidor valida el token de la solicitud
+    Then rechaza la solicitud con un error HTTP 401 (Unauthorized)
+    And no expone información sensible del sistema en la respuesta de error
+
+  @AT-24 @US-24 @seguridad
+  Scenario: Datos de usuarios almacenados con mecanismos de protección adecuados
+    Given que los datos de validaciones y referencias de los usuarios son almacenados en el sistema
+    When el sistema gestiona la persistencia de esa información
+    Then aplica mecanismos de cifrado o protección adecuados para garantizar la confidencialidad de la información de los usuarios

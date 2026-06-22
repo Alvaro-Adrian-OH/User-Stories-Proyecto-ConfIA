@@ -1,0 +1,205 @@
+Feature: EP02–Validación de Fuentes Académicas
+  Como estudiante o investigador
+  Quiero validar fuentes académicas por URL o PDF
+  Para determinar rápidamente su confiabilidad y utilizarlas en trabajos académicos
+
+  # User Story 04
+
+  @AT-04 @US-04 @validacion-url
+  Scenario: Validación completada dentro del tiempo máximo permitido
+    Given que un usuario ingresa una URL válida en el campo de validación
+    When inicia el análisis de la fuente
+    Then el sistema procesa la solicitud
+    And retorna el resultado en un tiempo máximo de 15 segundos
+
+  @AT-04 @US-04 @validacion-url
+  Scenario: URL de Wikipedia clasificada como fuente terciaria con score bajo
+    Given que un usuario ingresa un enlace de Wikipedia en el campo de validación
+    When el sistema analiza la fuente
+    Then retorna un score de confiabilidad menor al 40%
+    And indica que se trata de una fuente terciaria
+
+  @AT-04 @US-04 @validacion-url
+  Scenario: Validación bloqueada por URL con formato inválido
+    Given que un usuario ingresa una URL con formato inválido (sin protocolo o con caracteres ilegales)
+    When intenta iniciar la validación
+    Then el sistema bloquea el proceso
+    And muestra un mensaje de error de formato de URL
+
+  @AT-04 @US-04 @validacion-url
+  Scenario: URL de revista indexada obtiene score alto de confiabilidad
+    Given que un usuario ingresa la URL de un artículo publicado en una revista indexada de cuartil Q1 o Q2
+    When el sistema completa el análisis
+    Then retorna un score de confiabilidad superior al 70%
+
+  @AT-04 @US-04 @validacion-url
+  Scenario: Notificación al usuario cuando la URL no es accesible
+    Given que el sistema no puede acceder a la URL proporcionada por tiempo de espera o error de red
+    When agota los intentos de conexión
+    Then notifica al usuario con un mensaje claro sobre la inaccesibilidad del recurso
+
+  # User Story 05
+
+  @AT-05 @US-05 @visualizacion
+  Scenario: Porcentaje de confiabilidad mostrado mediante gráfico visual
+    Given que el sistema finaliza el análisis de una fuente
+    When el usuario consulta los resultados
+    Then la interfaz muestra el porcentaje de confiabilidad mediante una barra de progreso o gráfico visual
+
+  @AT-05 @US-05 @visualizacion
+  Scenario: Justificación generada por la IA acompaña el score
+    Given que el sistema genera el resultado de confiabilidad de una fuente
+    When el usuario visualiza el panel de resultados
+    Then se presenta una justificación textual generada por la IA explicando los motivos del score asignado
+
+  @AT-05 @US-05 @visualizacion
+  Scenario: Diferenciación visual entre niveles de confiabilidad
+    Given que se muestra el resultado de confiabilidad de una fuente
+    When el usuario revisa la información en pantalla
+    Then el sistema diferencia visualmente por color o ícono entre fuentes confiables, parcialmente confiables y no confiables
+
+  @AT-05 @US-05 @visualizacion
+  Scenario: Justificación académica clara para fuentes con score bajo
+    Given que el usuario analiza una fuente con score bajo
+    When visualiza la justificación en el panel de resultados
+    Then el sistema describe en lenguaje académico comprensible las razones por las que la fuente no es recomendada
+
+  @AT-05 @US-05 @visualizacion
+  Scenario: Opción para guardar fuente confiable desde el panel de resultados
+    Given que el usuario visualiza los resultados de una fuente validada como confiable
+    When revisa el panel de confiabilidad
+    Then el sistema ofrece la opción directa de guardar la fuente en la biblioteca de referencias
+
+  # User Story 06
+
+  @AT-06 @US-06 @historial
+  Scenario: Historial ordenado descendentemente por fecha
+    Given que un usuario autenticado accede al historial de validaciones
+    When la vista del historial se carga
+    Then el sistema muestra las validaciones ordenadas de forma descendente por fecha con la más reciente primero
+
+  @AT-06 @US-06 @historial
+  Scenario: Historial persiste entre sesiones
+    Given que un usuario cierra sesión en ConfIA
+    When vuelve a ingresar con sus credenciales
+    And accede a su historial
+    Then el sistema recupera correctamente todas las validaciones previas almacenadas en la base de datos
+
+  @AT-06 @US-06 @historial
+  Scenario: Acceso al detalle de una validación previa
+    Given que el usuario selecciona una validación previa del historial
+    When accede a su detalle
+    Then el sistema muestra el score, la justificación y la URL o nombre del documento validado
+
+  @AT-06 @US-06 @historial
+  Scenario: Estado vacío cuando el usuario no tiene validaciones registradas
+    Given que un usuario no ha realizado ninguna validación aún
+    When accede a la sección de historial
+    Then el sistema muestra un estado vacío con un mensaje orientativo que invita a realizar la primera validación
+
+  @AT-06 @US-06 @historial
+  Scenario: Paginación en historial con múltiples registros
+    Given que el historial del usuario contiene múltiples registros
+    When el usuario navega por la lista
+    Then el sistema implementa paginación o scroll infinito para evitar carga excesiva de la interfaz
+
+  # User Story 07
+
+  @AT-07 @US-07 @carga-pdf
+  Scenario: Carga bloqueada por formato de archivo no permitido
+    Given que un usuario intenta cargar un archivo cuya extensión no es PDF
+    When selecciona o arrastra el archivo hacia la zona de carga
+    Then el sistema bloquea la carga
+    And muestra un mensaje de error tipo toast indicando el formato no admitido
+
+  @AT-07 @US-07 @carga-pdf
+  Scenario: Carga bloqueada por tamaño de archivo superior a 10 MB
+    Given que un usuario intenta cargar un archivo PDF que excede los 10 MB
+    When inicia la subida del archivo
+    Then el sistema bloquea el proceso
+    And notifica mediante un toast el límite máximo de tamaño permitido
+
+  @AT-07 @US-07 @carga-pdf
+  Scenario: Carga exitosa de PDF válido dentro del límite permitido
+    Given que un usuario selecciona un archivo PDF válido dentro del límite de 10 MB
+    When la carga finaliza exitosamente
+    Then el sistema confirma la recepción del archivo
+    And habilita las opciones de análisis disponibles
+
+  @AT-07 @US-07 @carga-pdf
+  Scenario: Notificación al usuario al intentar cargar un PDF corrupto
+    Given que un usuario intenta cargar un archivo PDF corrupto o ilegible
+    When el sistema intenta procesar el archivo
+    Then notifica al usuario con un mensaje de error descriptivo
+    And solicita que intente con otro archivo
+
+  @AT-07 @US-07 @carga-pdf
+  Scenario: Confirmación visual del archivo cargado antes del análisis
+    Given que un usuario carga un archivo PDF correctamente
+    When el sistema lo recibe
+    Then muestra el nombre del archivo y el tamaño en la interfaz como confirmación visual antes de iniciar el análisis
+
+  # User Story 08
+
+  @AT-08 @US-08 @validacion-pdf
+  Scenario: Extracción correcta de título y autores en PDF con texto seleccionable
+    Given que se carga un PDF con texto seleccionable
+    When el sistema aplica extracción de contenido
+    Then identifica correctamente el título y los autores del documento en al menos el 90% de los casos
+
+  @AT-08 @US-08 @validacion-pdf
+  Scenario: OCR automático aplicado sobre PDF escaneado
+    Given que el PDF cargado es un documento escaneado sin capa de texto
+    When el sistema detecta la ausencia de texto seleccionable
+    Then aplica OCR automáticamente para extraer el contenido
+    And continúa con el proceso de análisis normalmente
+
+  @AT-08 @US-08 @validacion-pdf
+  Scenario: Extracción de metadatos bibliográficos del PDF
+    Given que el sistema extrae el contenido de un PDF cargado
+    When procesa los metadatos del documento
+    Then retorna al usuario la información de título, autores, año de publicación y fuente cuando estén disponibles
+
+  @AT-08 @US-08 @validacion-pdf 
+  Scenario: Resultados completos tras el análisis del PDF
+    Given que el sistema finaliza el análisis de un PDF cargado
+    When presenta los resultados al usuario
+    Then incluye el score de confiabilidad, la justificación generada por la IA y los datos bibliográficos extraídos
+
+  @AT-08 @US-08 @validacion-pdf
+  Scenario: Desglose de referencias internas identificadas en el PDF
+    Given que el PDF analizado contiene múltiples referencias internas
+    When el sistema completa el análisis
+    Then permite al usuario acceder a un desglose de las referencias identificadas dentro del documento
+
+  # User Story 20
+
+  @AT-20 @US-20 @reporte
+  Scenario: Reporte exportado en PDF incluye la marca de ConfIA
+    Given que el usuario solicita generar un reporte de confiabilidad de una fuente analizada
+    When el sistema exporta el reporte en formato PDF
+    Then el archivo incluye el logo o marca de agua de ConfIA
+
+  @AT-20 @US-20 @reporte
+  Scenario: Reporte detalla los motivos exactos de aprobación o rechazo
+    Given que el reporte PDF de confiabilidad ha sido generado
+    When el usuario lo descarga y revisa el contenido
+    Then el documento detalla los motivos exactos por los cuales la fuente fue aprobada o rechazada
+
+  @AT-20 @US-20 @reporte
+  Scenario: Reporte incluye todos los datos del análisis realizado
+    Given que el usuario genera un reporte de una fuente analizada
+    When revisa el contenido del documento exportado
+    Then el reporte incluye el score de confiabilidad, la justificación de la IA, los datos bibliográficos y la fecha del análisis
+
+  @AT-20 @US-20 @reporte
+  Scenario: Generación de reporte bloqueada sin análisis previo
+    Given que el usuario intenta generar un reporte sin haber analizado ninguna fuente
+    When accede a la función de generación de reportes
+    Then el sistema informa que debe existir al menos un análisis previo para generar el reporte
+
+  @AT-20 @US-20 @reporte
+  Scenario: Nombre del archivo exportado incluye identificador de la fuente o fecha
+    Given que el reporte de confiabilidad es exportado exitosamente
+    When el usuario descarga el archivo
+    Then el nombre del archivo incluye el identificador de la fuente o la fecha del análisis para facilitar su organización
