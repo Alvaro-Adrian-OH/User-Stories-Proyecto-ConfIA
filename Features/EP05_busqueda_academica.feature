@@ -1,0 +1,104 @@
+Feature: EP05–Búsqueda y Descubrimiento Académico
+  Como investigador
+  Quiero buscar artículos académicos, recibir recomendaciones y aplicar filtros avanzados
+  Para encontrar fuentes relevantes de forma eficiente y reducir el tiempo invertido en revisión bibliográfica
+
+  # User Story 16
+
+  @AT-16 @US-16 @busqueda
+  Scenario: Búsqueda retorna resultados estructurados desde las APIs académicas
+    Given que el investigador ingresa un término de búsqueda en la plataforma
+    When el sistema consulta las APIs académicas integradas
+    Then retorna una lista de resultados estructurada con título, autores, año y fuente de cada artículo
+
+  @AT-16 @US-16 @busqueda 
+  Scenario: Resultados de búsqueda presentados de forma paginada
+    Given que la búsqueda académica retorna múltiples resultados
+    When el usuario los visualiza en pantalla
+    Then el sistema presenta los resultados de forma paginada para evitar sobrecarga en la interfaz
+
+  @AT-16 @US-16 @busqueda
+  Scenario: Resultados filtrados y ordenados por relevancia
+    Given que la API académica retorna resultados para un término de búsqueda
+    When el sistema los procesa
+    Then filtra y ordena los resultados por relevancia respecto al término ingresado
+
+  @AT-16 @US-16 @busqueda 
+  Scenario: Estado vacío con sugerencias cuando la búsqueda no arroja resultados
+    Given que el usuario realiza una búsqueda académica que no arroja resultados
+    When el sistema procesa la consulta
+    Then muestra un estado de resultado vacío
+    And ofrece sugerencias de búsqueda alternativas al usuario
+
+  @AT-16 @US-16 @busqueda
+  Scenario: Detalle de artículo ofrece opciones de validación y guardado
+    Given que el usuario hace clic en un resultado de búsqueda académica
+    When accede al detalle del artículo
+    Then el sistema muestra la información completa del artículo
+    And ofrece la opción de validar la fuente o guardar la referencia en la biblioteca
+
+  # User Story 17
+
+  @AT-17 @US-17 @recomendaciones
+  Scenario: Recomendaciones limitadas a artículos de no más de 5 años de antigüedad
+    Given que el usuario accede al dashboard de ConfIA
+    When el sistema genera las recomendaciones automáticas de artículos
+    Then muestra únicamente artículos cuya fecha de publicación no supera los 5 años de antigüedad
+
+  @AT-17 @US-17 @recomendaciones
+  Scenario: Recomendaciones relacionadas con el área de estudio del usuario
+    Given que el sistema genera recomendaciones automáticas en el dashboard
+    When el usuario las visualiza
+    Then los artículos mostrados están relacionados temáticamente con el área de estudio del usuario o su actividad reciente en la plataforma
+
+  @AT-17 @US-17 @recomendaciones
+  Scenario: Artículo descartado no vuelve a recomendarse en sesiones posteriores
+    Given que el usuario descarta o ignora una recomendación del dashboard
+    When el sistema actualiza el panel en sesiones posteriores
+    Then evita recomendar ese mismo artículo repetidamente
+
+  @AT-17 @US-17 @recomendaciones 
+  Scenario: Artículo recomendado ofrece opciones de validación y guardado
+    Given que el usuario hace clic en un artículo recomendado en el dashboard
+    When accede al detalle del artículo
+    Then el sistema ofrece opciones para validar la fuente, guardar la referencia o acceder al recurso externo
+
+  @AT-17 @US-17 @recomendaciones 
+  Scenario: Artículos destacados mostrados cuando no hay datos suficientes para personalizar
+    Given que el sistema no tiene datos suficientes del usuario para personalizar las recomendaciones
+    When muestra el panel inicial del dashboard
+    Then presenta artículos destacados o tendencias generales en investigación académica como recomendaciones por defecto
+
+  # User Story 18
+
+  @AT-18 @US-18 @filtros 
+  Scenario: Filtro por año retorna únicamente artículos posteriores al año indicado
+    Given que el investigador aplica el filtro de año con el parámetro mayor a 2020
+    When el sistema filtra los resultados de búsqueda
+    Then retorna únicamente artículos publicados después del año 2020
+
+  @AT-18 @US-18 @filtros 
+  Scenario: Filtro por autor retorna únicamente resultados del autor indicado
+    Given que el investigador aplica el filtro por autor con un nombre específico
+    When el sistema procesa el filtro
+    Then retorna únicamente resultados cuyo campo de autores contiene el nombre indicado
+
+  @AT-18 @US-18 @filtros 
+  Scenario: Filtro por cuartil retorna únicamente artículos del cuartil seleccionado
+    Given que el investigador aplica el filtro por cuartil seleccionando Q1 o Q2
+    When el sistema filtra los resultados
+    Then retorna únicamente artículos publicados en revistas del cuartil seleccionado
+
+  @AT-18 @US-18 @filtros
+  Scenario: Múltiples filtros aplicados simultáneamente de forma combinada
+    Given que el usuario aplica múltiples filtros de búsqueda simultáneamente
+    When el sistema ejecuta la búsqueda filtrada
+    Then aplica todos los filtros de forma combinada
+    And retorna únicamente los resultados que cumplen todas las condiciones seleccionadas
+
+  @AT-18 @US-18 @filtros
+  Scenario: Mensaje informativo cuando los filtros aplicados no arrojan resultados
+    Given que el usuario aplica filtros de búsqueda que no arrojan ningún resultado
+    When el sistema procesa la búsqueda filtrada
+    Then muestra un mensaje informativo indicando que no hay coincidencias
+    And sugiere ampliar los criterios de búsqueda para obtener resultados
